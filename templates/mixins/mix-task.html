@@ -1,0 +1,17 @@
+{{ define "task"}}
+<div class="task" draggable="true" x-data="{ edit: false}">
+  <p x-show="edit==false" x-on:click="edit=true">{{ .Title}}</p>
+  <form hx-put="/tasks/id/{{ .ID}}" hx-target="closest div" hx-swap="outerHTML">
+    <input type="hidden" name="category_id" value="{{ .CategoryID }}" />
+    <input type="text" name="title" value="{{ .Title }}" x-show="edit" />
+    <input
+      type="submit"
+      value="valider"
+      x-show="edit"
+      x-on:click="edit=false"
+    />
+    <input type="button" value="cancel" x-on:click="edit=false" x-show="edit" />
+  </form>
+</div>
+
+{{end}}

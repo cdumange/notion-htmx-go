@@ -1,0 +1,34 @@
+{{template "base"}}
+<script type="text/javascript">
+  function onDrop(e) {
+    console.log(e);
+    document.createEvent("drop", e);
+  }
+
+  function onOver(e) {
+    console.log("test");
+  }
+</script>
+
+<div class="categories">
+  {{range .}}
+  <div
+    class="category"
+    hx-put="/tasks/category/{{ .ID }}"
+    hx-trigger="drop"
+    x-on:mouseover="onOver"
+    ondrop="onDrop"
+    onmouseover="onOver"
+  >
+    <span>{{ .Title }}</span>
+    {{ template "taskList" .}}
+  </div>
+  {{end}}
+</div>
+
+<div
+  style="min-width: 100vw; height: 150px; background-color: var(--blue-5)"
+  ondrop="onOver"
+>
+  Zone de test
+</div>
