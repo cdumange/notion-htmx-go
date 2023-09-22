@@ -1,0 +1,32 @@
+linters:
+  # Enable specific linter
+  # https://golangci-lint.run/usage/linters/#enabled-by-default
+  enable:
+  disable:
+    - tagliatelle
+    - nlreturn
+    - depguard
+    - gci
+    - gofumpt
+    - tagalign
+    - testpackage
+    - funlen
+    - wsl
+  # https://golangci-lint.run/usage/linters/#disabled-by-default
+  presets:
+    - bugs
+    - comment
+    - complexity
+    - error
+    - format
+    - import
+    - metalinter
+    - module
+    - performance
+    - sql
+    - style
+    - test
+    - unused
+  # Run only fast linters from enabled linters set (first run won't be fast)
+  # Default: false
+  fast: true
