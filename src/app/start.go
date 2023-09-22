@@ -7,6 +7,8 @@ import (
 	"github.com/cdumange/notion-htmx-go/repositories"
 	"github.com/cdumange/notion-htmx-go/routing"
 	"github.com/cdumange/notion-htmx-go/templates"
+
+	_ "github.com/lib/pq"
 )
 
 func Start() {
