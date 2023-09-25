@@ -17,7 +17,7 @@ type Task struct {
 
 // Category represent a task category.
 type Category struct {
-	ID    uuid.UUID
-	Title string
-	List  []Task
+	ID    uuid.UUID `json:"id"`
+	Title string    `json:"title"`
+	List  []Task    `json:"list"`
 }
