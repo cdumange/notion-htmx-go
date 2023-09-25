@@ -29,8 +29,9 @@ body {
   flex-direction: row;
   justify-content: left;
   background-color: var(--gray-2);
-  margin-right: var(--size-4);
   font-size: large;
+  min-width: var(--size-15);
+  width: 100%;
 }
 
 .task {
@@ -51,4 +52,12 @@ header {
 
 header h1 {
   min-width: 100%;
+}
+
+.categoryTitle {
+  font-weight: bold;
+  font-size: large;
+  border-radius: var(--radius-3);
+  background-color: var(--cyan-4);
+  padding: var(--size-3);
 }

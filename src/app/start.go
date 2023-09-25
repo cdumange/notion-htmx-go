@@ -7,6 +7,7 @@ import (
 	"github.com/cdumange/notion-htmx-go/repositories"
 	"github.com/cdumange/notion-htmx-go/routing"
 	"github.com/cdumange/notion-htmx-go/templates"
+	"github.com/cdumange/notion-htmx-go/usecases"
 
 	_ "github.com/lib/pq"
 )
@@ -20,10 +21,15 @@ func Start() {
 	}
 
 	taskRepo := repositories.NewTaskRepository(db)
+	categoryRepo := repositories.NewCategoryRepository(db)
+
+	ucRepositories := usecases.NewCategoriesUsecases(categoryRepo, taskRepo)
 
 	templates.RegisterTemplates(e)
 	routing.LoadRouter(e, routing.Dependencies{
-		TaskCreator: taskRepo,
+		TaskCreator:        taskRepo,
+		GetAllCategory:     ucRepositories,
+		CategoryFullGetter: ucRepositories,
 	})
 	e.Logger.Panic(e.Start(":3000"))
 }
