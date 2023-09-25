@@ -36,6 +36,11 @@ func (r *CategoryRepository) GetCategory(ctx context.Context, ID uuid.UUID) (mod
 	return c[0], err
 }
 
+// GetAll will retrieve all categories.
+func (r *CategoryRepository) GetAll(ctx context.Context) ([]models.Category, error) {
+	return r.search(ctx, fmt.Sprintf("SELECT %s FROM categories", categoryProjection))
+}
+
 func (r *CategoryRepository) search(ctx context.Context, sql string, args ...any) ([]models.Category, error) {
 	rows, err := r.db.QueryContext(ctx, sql, args...)
 	if err != nil {

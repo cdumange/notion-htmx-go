@@ -3,29 +3,31 @@ package routing
 import (
 	"net/http"
 
-	"github.com/cdumange/notion-htmx-go/models"
-
 	"github.com/labstack/echo/v4"
 )
 
+// LoadRouter loads all the endpoints for the API.
 func LoadRouter(app *echo.Echo, deps Dependencies) {
-	app.GET("", index)
+	app.GET("", index(deps))
 
 	registerTasksEndpoint(app, deps)
 }
 
+// Dependencies holds the routing dependencies.
 type Dependencies struct {
 	TaskCreator taskCreator
 
 	CategoryFullGetter getCategoryWithTasksUC
+	GetAllCategory     getAllCategoryUC
 }
 
-func index(ctx echo.Context) error {
-	var err error
+func index(deps Dependencies) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cats, err := deps.GetAllCategory.GetCategoriesWithTasks(c.Request().Context())
+		if err != nil {
+			return c.NoContent(http.StatusInternalServerError)
+		}
 
-	if err = ctx.Render(http.StatusOK, "index.html", []models.Category{}); err != nil {
-		ctx.Logger().Error(err)
+		return c.Render(http.StatusOK, "index.html", cats)
 	}
-
-	return err
 }

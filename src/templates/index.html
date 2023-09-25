@@ -20,14 +20,19 @@
     ondrop="onDrop"
     onmouseover="onOver"
   >
-    <span>{{ .Title }}</span>
+    <span class="categoryTitle">{{ .Title }}</span>
     {{ template "taskList" .}}
   </div>
   {{end}}
 </div>
 
 <div
-  style="min-width: 100vw; height: 150px; background-color: var(--blue-5)"
+  style="
+    min-width: 100vw;
+    height: 150px;
+    background-color: var(--blue-5);
+    display: none;
+  "
   ondrop="onOver"
 >
   Zone de test

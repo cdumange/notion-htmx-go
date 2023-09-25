@@ -14,9 +14,14 @@ type getCategoryWithTasksUC interface {
 	GetCategoryWithTasks(ctx context.Context, categoryID uuid.UUID) (models.Category, error)
 }
 
+type getAllCategoryUC interface {
+	GetCategoriesWithTasks(ctx context.Context) ([]models.Category, error)
+}
+
 func registerCategoryHandlers(app *echo.Echo, deps Dependencies) {
 	group := app.Group("/categories")
 	group.GET("/full/:categoryID", getCategoryWithTasks(deps.CategoryFullGetter))
+	group.GET("/all", getAllCategories(deps.GetAllCategory))
 }
 
 func getCategoryWithTasks(uc getCategoryWithTasksUC) echo.HandlerFunc {
@@ -37,5 +42,16 @@ func getCategoryWithTasks(uc getCategoryWithTasksUC) echo.HandlerFunc {
 			c.Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
+	}
+}
+
+func getAllCategories(s getAllCategoryUC) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		v, err := s.GetCategoriesWithTasks(c.Request().Context())
+		if err != nil {
+			return c.NoContent(http.StatusInternalServerError)
+		}
+
+		return c.JSON(http.StatusOK, v)
 	}
 }
