@@ -61,3 +61,12 @@ header h1 {
   background-color: var(--cyan-4);
   padding: var(--size-3);
 }
+
+.displayTask {
+  display: flex;
+  justify-content: space-between;
+}
+
+.hidden {
+  display: none;
+}

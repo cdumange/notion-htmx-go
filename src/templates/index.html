@@ -5,8 +5,8 @@
     document.createEvent("drop", e);
   }
 
-  function onOver(e) {
-    console.log("test");
+  function allowDrop(ev) {
+    ev.preventDefault();
   }
 </script>
 
@@ -18,7 +18,7 @@
     hx-trigger="drop"
     x-on:mouseover="onOver"
     ondrop="onDrop"
-    onmouseover="onOver"
+    ondragover="allowDrop"
   >
     <span class="categoryTitle">{{ .Title }}</span>
     {{ template "taskList" .}} {{template "createTask" .}}

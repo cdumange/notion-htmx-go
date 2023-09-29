@@ -5,11 +5,16 @@
     hx-swap="afterend"
     hx-target="previous .task"
     x-show="oncreate"
-    x-on:submit="oncreate==false"
+    x-on:submit="oncreate=false"
   >
     <div>
       <span>Title:</span>
-      <input type="hidden" name="category_id" value="{{.ID}}" />
+      <input
+        type="hidden"
+        name="category_id"
+        hx-swap="delete"
+        value="{{.ID}}"
+      />
       <input
         type="text"
         name="title"
@@ -18,8 +23,11 @@
     </div>
     <button type="submit">create</button>
   </form>
-  <button type="button" x-on:click="oncreate=true" x-show="oncreate == false">
-    +
-  </button>
+  <input
+    type="button"
+    x-on:click="oncreate=true"
+    x-show="oncreate == false"
+    value="+"
+  />
 </div>
 {{end}}
