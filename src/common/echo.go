@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-playground/validator"
@@ -31,7 +32,7 @@ func NewEcho() *echo.Echo {
 	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {
 			if err = next(c); err != nil {
-				c.Logger().Error(err)
+				c.Logger().Error(fmt.Errorf("%s %s: %w", c.Request().Method, c.Request().URL.String(), err))
 			}
 			return err
 		}

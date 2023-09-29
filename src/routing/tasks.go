@@ -12,29 +12,37 @@ import (
 
 func registerTasksEndpoint(app *echo.Echo, deps Dependencies) {
 	group := app.Group("tasks")
-	group.PUT("/id/:id", updateTask)
-	group.PUT("/category/:id", updateTask)
+	group.PUT("/id/:id", updateTask(deps.TaskUpdater))
+	group.PUT("/category/:id", updateTask(deps.TaskUpdater))
 
-	group.POST("/", createTask(deps.TaskCreator))
+	group.POST("", createTask(deps.TaskCreator))
 }
 
-func updateTask(c echo.Context) (err error) {
-	var task models.Task
-	if err := c.Bind(&task); err != nil && task.CategoryID != uuid.Nil && len(task.Title) > 0 {
-		return c.NoContent(http.StatusBadRequest)
+type taskUpdater interface {
+	UpdateTask(ctx context.Context, task models.Task) error
+}
+
+func updateTask(s taskUpdater) echo.HandlerFunc {
+	return func(c echo.Context) (err error) {
+		var task models.Task
+		if err := c.Bind(&task); err != nil && task.CategoryID != uuid.Nil && len(task.Title) > 0 {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		if err = c.Validate(task); err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		if task.ID, err = uuid.Parse(c.Param("id")); err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		if err = s.UpdateTask(c.Request().Context(), task); err != nil {
+			return c.NoContent(http.StatusInternalServerError)
+		}
+
+		return c.Render(http.StatusAccepted, "task.html", task)
 	}
-
-	if err = c.Validate(task); err != nil {
-		return c.NoContent(http.StatusBadRequest)
-	}
-
-	if task.ID, err = uuid.Parse(c.Param("id")); err != nil {
-		return c.NoContent(http.StatusBadRequest)
-	}
-
-	c.Logger().Debugf("received : %v", task)
-
-	return c.Render(http.StatusAccepted, "task.html", task)
 }
 
 type taskCreator interface {
@@ -58,10 +66,7 @@ func createTask(creator taskCreator) echo.HandlerFunc {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
-		return c.JSON(http.StatusCreated, struct {
-			ID uuid.UUID
-		}{
-			ID: ID,
-		})
+		task.ID = ID
+		return c.Render(http.StatusCreated, "task.html", task)
 	}
 }

@@ -71,6 +71,7 @@ func (r *TaskRepository) CreateTask(ctx context.Context, task models.Task) (uuid
 }
 
 // UpdateTask updates a task.
-func (r *TaskRepository) UpdateTask(task models.Task) error {
-	return nil
+func (r *TaskRepository) UpdateTask(ctx context.Context, task models.Task) error {
+	_, err := r.db.ExecContext(ctx, "UPDATE tasks set title= $1 WHERE id=$2", task.Title, task.ID)
+	return err
 }
