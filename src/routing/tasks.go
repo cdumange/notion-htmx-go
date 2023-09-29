@@ -16,6 +16,7 @@ func registerTasksEndpoint(app *echo.Echo, deps Dependencies) {
 	group.PUT("/category/:id", updateTask(deps.TaskUpdater))
 
 	group.POST("", createTask(deps.TaskCreator))
+	group.DELETE("/:id", func(c echo.Context) error { return nil })
 }
 
 type taskUpdater interface {
