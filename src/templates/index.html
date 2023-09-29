@@ -21,7 +21,7 @@
     onmouseover="onOver"
   >
     <span class="categoryTitle">{{ .Title }}</span>
-    {{ template "taskList" .}}
+    {{ template "taskList" .}} {{template "createTask" .}}
   </div>
   {{end}}
 </div>

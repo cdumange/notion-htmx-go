@@ -28,6 +28,7 @@ func Start() {
 	templates.RegisterTemplates(e)
 	routing.LoadRouter(e, routing.Dependencies{
 		TaskCreator:        taskRepo,
+		TaskUpdater:        taskRepo,
 		GetAllCategory:     ucRepositories,
 		CategoryFullGetter: ucRepositories,
 	})
