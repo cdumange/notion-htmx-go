@@ -71,3 +71,13 @@ func createTask(creator taskCreator) echo.HandlerFunc {
 		return c.Render(http.StatusCreated, "task.html", task)
 	}
 }
+
+type taskDeletor interface {
+	DeleteTask(ctx context.Context, ID uuid.UUID) error
+}
+
+func deleteTask(s taskDeletor) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.NoContent(http.StatusAccepted)
+	}
+}

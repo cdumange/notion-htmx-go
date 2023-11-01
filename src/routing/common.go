@@ -17,6 +17,7 @@ func LoadRouter(app *echo.Echo, deps Dependencies) {
 type Dependencies struct {
 	TaskCreator taskCreator
 	TaskUpdater taskUpdater
+	TaskDeletor taskDeletor
 
 	CategoryFullGetter getCategoryWithTasksUC
 	GetAllCategory     getAllCategoryUC
