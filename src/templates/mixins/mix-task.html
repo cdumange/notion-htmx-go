@@ -1,7 +1,14 @@
 {{ define "task"}}
-<div class="task" draggable="true" x-data="{ edit: false}">
+<li
+  class="task"
+  draggable="true"
+  x-data="{edit:false}"
+  x-effect="edit= editing === '{{.ID}}'"
+  x-init="console.log(editing)"
+  ondrop="onDrop"
+>
   <div :class="edit ? 'hidden': 'displayTask'" x-show="edit==false">
-    <p x-on:click="edit=true">{{ .Title}}</p>
+    <p @click="setEdit('{{.ID}}')">{{ .Title}}</p>
     <p
       style="cursor: pointer"
       hx-delete="/tasks/{{.ID}}"
@@ -20,8 +27,13 @@
     <input type="hidden" name="category_id" value="{{ .CategoryID }}" />
     <input type="text" name="title" value="{{ .Title }}" />
     <input type="submit" value="valider" x-on:click="edit=false" />
-    <input type="button" value="cancel" x-on:click="edit=false" x-show="edit" />
+    <input
+      type="button"
+      value="cancel"
+      x-on:click="setEdit('')"
+      x-show="edit"
+    />
   </form>
-</div>
+</li>
 
 {{end}}

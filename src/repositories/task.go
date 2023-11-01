@@ -75,3 +75,9 @@ func (r *TaskRepository) UpdateTask(ctx context.Context, task models.Task) error
 	_, err := r.db.ExecContext(ctx, "UPDATE tasks set title= $1 WHERE id=$2", task.Title, task.ID)
 	return err
 }
+
+// DeleteTask deletes a task by its ID.
+func (r *TaskRepository) DeleteTask(ctx context.Context, ID uuid.UUID) error {
+	_, err := r.db.ExecContext(ctx, "DELETE FROM tasks WHERE id=$1", ID)
+	return err
+}

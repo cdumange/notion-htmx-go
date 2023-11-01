@@ -29,6 +29,7 @@ func Start() {
 	routing.LoadRouter(e, routing.Dependencies{
 		TaskCreator:        taskRepo,
 		TaskUpdater:        taskRepo,
+		TaskDeletor:        taskRepo,
 		GetAllCategory:     ucRepositories,
 		CategoryFullGetter: ucRepositories,
 	})

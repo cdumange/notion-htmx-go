@@ -14,26 +14,15 @@
   {{range .}}
   <div
     class="category"
-    hx-put="/tasks/category/{{ .ID }}"
-    hx-trigger="drop"
-    x-on:mouseover="onOver"
-    ondrop="onDrop"
-    ondragover="allowDrop"
+    x-data="{ editing : 'toto', setEdit(id) { this.editing = id;}}"
   >
-    <span class="categoryTitle">{{ .Title }}</span>
-    {{ template "taskList" .}} {{template "createTask" .}}
+    <span class="categoryTitle" @click="console.log(editing)"
+      >{{ .Title }}</span
+    >
+    <ul x-on:drop="console.log(event)">
+      {{ range .List}} {{ template "task" .}} {{ end }} {{template "createTask"
+      .}}
+    </ul>
   </div>
   {{end}}
-</div>
-
-<div
-  style="
-    min-width: 100vw;
-    height: 150px;
-    background-color: var(--blue-5);
-    display: none;
-  "
-  ondrop="onOver"
->
-  Zone de test
 </div>
