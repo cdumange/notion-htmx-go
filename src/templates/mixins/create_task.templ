@@ -1,0 +1,35 @@
+package mixins
+
+templ CreateTask() {
+    <div x-data="{ oncreate: false }">
+        <form
+            hx-post="/tasks"
+            hx-swap="afterend"
+            hx-target="previous .task"
+            x-show="oncreate"
+            x-on:submit="oncreate=false"
+        >
+            <div>
+            <span>Title:</span>
+            <input
+                type="hidden"
+                name="category_id"
+                hx-swap="delete"
+                value="{{.ID}}"
+            />
+            <input
+                type="text"
+                name="title"
+                placeholder="the title of your new task"
+            />
+            </div>
+            <button type="submit">create</button>
+        </form>
+        <input
+            type="button"
+            x-on:click="oncreate=true"
+            x-show="oncreate == false"
+            value="+"
+        />
+    </div>
+}

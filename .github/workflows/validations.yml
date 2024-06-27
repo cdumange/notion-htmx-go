@@ -14,3 +14,7 @@ jobs:
         with:
           version: v1.54
           working-directory: ./src
+      - name: install templ
+        run: go install github.com/a-h/templ/cmd/templ@latest
+      - name: generate templates
+        run: templ generate ./templates/

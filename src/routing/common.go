@@ -3,6 +3,8 @@ package routing
 import (
 	"net/http"
 
+	"github.com/a-h/templ"
+	"github.com/cdumange/notion-htmx-go/templates"
 	"github.com/labstack/echo/v4"
 )
 
@@ -30,6 +32,7 @@ func index(deps Dependencies) echo.HandlerFunc {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
-		return c.Render(http.StatusOK, "index.html", cats)
+		templ.Handler(templates.Index(cats)).ServeHTTP(c.Response().Writer, c.Request())
+		return nil
 	}
 }
