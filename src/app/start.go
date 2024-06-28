@@ -27,11 +27,10 @@ func Start() {
 
 	templates.RegisterTemplates(e)
 	routing.LoadRouter(e, routing.Dependencies{
-		TaskCreator:        taskRepo,
-		TaskUpdater:        taskRepo,
-		TaskDeletor:        taskRepo,
-		GetAllCategory:     ucRepositories,
-		CategoryFullGetter: ucRepositories,
+		TaskCreator:     taskRepo,
+		TaskUpdater:     taskRepo,
+		TaskDeletor:     taskRepo,
+		CategoryService: ucRepositories,
 	})
 	e.Logger.Panic(e.Start(":3000"))
 }

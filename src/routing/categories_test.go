@@ -34,7 +34,7 @@ func Test_getCategoryWithTasks(t *testing.T) {
 
 		rec := httptest.NewRecorder()
 
-		mockS := newMockGetCategoryWithTasksUC(t)
+		mockS := newMockCategoryService(t)
 		mockS.On("GetCategoryWithTasks", mock.Anything, categoryID).Return(expectedCategory, nil).Once()
 
 		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/full/%s", categoryID.String()), nil)
@@ -52,7 +52,7 @@ func Test_getCategoryWithTasks(t *testing.T) {
 	t.Run("400", func(t *testing.T) {
 		rec := httptest.NewRecorder()
 
-		mockS := newMockGetCategoryWithTasksUC(t)
+		mockS := newMockCategoryService(t)
 
 		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/full/%s", categoryID.String()), nil)
 		c := api.NewContext(req, rec)
@@ -77,7 +77,7 @@ func Test_getCategoryWithTasks(t *testing.T) {
 
 		rec := httptest.NewRecorder()
 
-		mockS := newMockGetCategoryWithTasksUC(t)
+		mockS := newMockCategoryService(t)
 		mockS.On("GetCategoryWithTasks", mock.Anything, categoryID).
 			Return(expectedCategory, errors.New("an error")).
 			Once()
@@ -106,7 +106,7 @@ func Test_getCategoryWithTasks(t *testing.T) {
 
 		rec := httptest.NewRecorder()
 
-		mockS := newMockGetCategoryWithTasksUC(t)
+		mockS := newMockCategoryService(t)
 		mockS.On("GetCategoryWithTasks", mock.Anything, categoryID).
 			Return(expectedCategory, models.ErrCategoryNotFound).
 			Once()

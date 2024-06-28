@@ -13,6 +13,7 @@ func LoadRouter(app *echo.Echo, deps Dependencies) {
 	app.GET("", index(deps))
 
 	registerTasksEndpoint(app, deps)
+	registerCategoryHandlers(app, deps)
 }
 
 // Dependencies holds the routing dependencies.
@@ -21,13 +22,12 @@ type Dependencies struct {
 	TaskUpdater taskUpdater
 	TaskDeletor taskDeletor
 
-	CategoryFullGetter getCategoryWithTasksUC
-	GetAllCategory     getAllCategoryUC
+	CategoryService categoryService
 }
 
 func index(deps Dependencies) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		cats, err := deps.GetAllCategory.GetCategoriesWithTasks(c.Request().Context())
+		cats, err := deps.CategoryService.GetCategoriesWithTasks(c.Request().Context())
 		if err != nil {
 			return c.NoContent(http.StatusInternalServerError)
 		}

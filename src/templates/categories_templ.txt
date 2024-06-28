@@ -1,0 +1,4 @@
+<div class=\"categories\">
+<div class=\"category\" x-data=\"{ editing : &#39;toto&#39;, setEdit(id) { this.editing = id;}}\"><span class=\"categoryTitle\" @click=\"console.log(editing)\">
+</span><ul x-on:drop=\"console.log(event)\"></ul></div>
+</div>
