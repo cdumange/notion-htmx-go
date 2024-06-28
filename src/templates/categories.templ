@@ -1,0 +1,21 @@
+package templates
+
+import (
+	"github.com/cdumange/notion-htmx-go/models"
+	"github.com/cdumange/notion-htmx-go/templates/mixins"
+)
+
+templ CategoryList(categories []models.Category) {
+	<div class="categories">
+		for _, cat := range categories {
+			<div
+				class="category"
+				x-data="{ editing : 'toto', setEdit(id) { this.editing = id;}}"
+			>
+				<span class="categoryTitle" @click="console.log(editing)">{ cat.Title }</span>
+				<ul x-on:drop="console.log(event)"></ul>
+			</div>
+		}
+		@mixins.AddCategory()
+	</div>
+}

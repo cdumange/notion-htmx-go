@@ -16,7 +16,7 @@ func registerTasksEndpoint(app *echo.Echo, deps Dependencies) {
 	group.PUT("/category/:id", updateTask(deps.TaskUpdater))
 
 	group.POST("", createTask(deps.TaskCreator))
-	group.DELETE("/:id", func(c echo.Context) error { return nil })
+	group.DELETE("/:id", deleteTask(deps.TaskDeletor))
 }
 
 type taskUpdater interface {
@@ -76,7 +76,7 @@ type taskDeletor interface {
 	DeleteTask(ctx context.Context, ID uuid.UUID) error
 }
 
-func deleteTask(s taskDeletor) echo.HandlerFunc {
+func deleteTask(_ taskDeletor) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return c.NoContent(http.StatusAccepted)
 	}

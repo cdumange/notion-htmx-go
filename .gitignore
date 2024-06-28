@@ -1,3 +1,5 @@
 vendors/
 .vscode/
 src/__*
+bin/
+tmp/

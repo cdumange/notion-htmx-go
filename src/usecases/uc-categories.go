@@ -40,6 +40,11 @@ func (uc *CategoriesUsecases) GetCategory(ctx context.Context, categoryID uuid.U
 	return uc.categories.GetCategory(ctx, categoryID)
 }
 
+// CreateCategory tries to create a category.
+func (uc *CategoriesUsecases) CreateCategory(ctx context.Context, category models.Category) (uuid.UUID, error) {
+	return uc.categories.CreateCategory(ctx, category)
+}
+
 // GetCategoryWithTasks retrieves a category with its tasks.
 func (uc *CategoriesUsecases) GetCategoryWithTasks(ctx context.Context, categoryID uuid.UUID) (models.Category, error) {
 	cat, err := uc.categories.GetCategory(ctx, categoryID)

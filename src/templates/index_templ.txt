@@ -1,4 +1,1 @@
-<script type=\"text/javascript\">\n        function onDrop(e) {\n            console.log(e);\n            document.createEvent(\"drop\", e);\n        }\n\n        function allowDrop(ev) {\n            ev.preventDefault();\n        }\n    </script> <div class=\"categories\">
-<div class=\"category\" x-data=\"{ editing : &#39;toto&#39;, setEdit(id) { this.editing = id;}}\"><span class=\"categoryTitle\" @click=\"console.log(editing)\">
-</span><ul x-on:drop=\"console.log(event)\"></ul></div>
-</div>
+<script type=\"text/javascript\">\n            function onDrop(e) {\n                console.log(e);\n                document.createEvent(\"drop\", e);\n            }\n\n            function allowDrop(ev) {\n                ev.preventDefault();\n            }\n        </script> 
