@@ -1,29 +1,31 @@
 package mixins
 
-templ CreateTask() {
+import "github.com/google/uuid"
+
+templ CreateTask(categoryID uuid.UUID) {
     <div x-data="{ oncreate: false }">
         <form
             hx-post="/tasks"
             hx-swap="afterend"
-            hx-target="previous .task"
+            hx-target="previous #tasks"
             x-show="oncreate"
             x-on:submit="oncreate=false"
         >
             <div>
-            <span>Title:</span>
-            <input
-                type="hidden"
-                name="category_id"
-                hx-swap="delete"
-                value="{{.ID}}"
-            />
-            <input
-                type="text"
-                name="title"
-                placeholder="the title of your new task"
-            />
+                <span>Title:</span>
+                <input
+                    type="hidden"
+                    name="category_id"
+                    value={ categoryID.String() }
+                />
+                <input
+                    type="text"
+                    name="title"
+                    placeholder="the title of your new task"
+                />
             </div>
-            <button type="submit">create</button>
+            <input type="submit" value="create" />
+            <input type="button" value="cancel" x-on:click="oncreate=false"/>
         </form>
         <input
             type="button"

@@ -4,10 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/a-h/templ"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 
 	"github.com/cdumange/notion-htmx-go/models"
+	"github.com/cdumange/notion-htmx-go/templates/mixins"
 )
 
 func registerTasksEndpoint(app *echo.Echo, deps Dependencies) {
@@ -42,7 +44,8 @@ func updateTask(s taskUpdater) echo.HandlerFunc {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
-		return c.Render(http.StatusAccepted, "task.html", task)
+		templ.Handler(mixins.Task(task)).ServeHTTP(c.Response().Writer, c.Request())
+		return nil
 	}
 }
 
@@ -68,7 +71,8 @@ func createTask(creator taskCreator) echo.HandlerFunc {
 		}
 
 		task.ID = ID
-		return c.Render(http.StatusCreated, "task.html", task)
+		templ.Handler(mixins.Task(task)).ServeHTTP(c.Response().Writer, c.Request())
+		return nil
 	}
 }
 
@@ -76,8 +80,17 @@ type taskDeletor interface {
 	DeleteTask(ctx context.Context, ID uuid.UUID) error
 }
 
-func deleteTask(_ taskDeletor) echo.HandlerFunc {
+func deleteTask(deleter taskDeletor) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		ID, err := uuid.Parse(c.Param("id"))
+		if err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+		err = deleter.DeleteTask(c.Request().Context(), ID)
+		if err != nil {
+			c.Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
 		return c.NoContent(http.StatusAccepted)
 	}
 }

@@ -8,13 +8,7 @@ import (
 templ CategoryList(categories []models.Category) {
 	<div class="categories">
 		for _, cat := range categories {
-			<div
-				class="category"
-				x-data="{ editing : 'toto', setEdit(id) { this.editing = id;}}"
-			>
-				<span class="categoryTitle" @click="console.log(editing)">{ cat.Title }</span>
-				<ul x-on:drop="console.log(event)"></ul>
-			</div>
+			@mixins.Category(cat)
 		}
 		@mixins.AddCategory()
 	</div>

@@ -1,0 +1,20 @@
+package mixins
+
+import (
+	"github.com/cdumange/notion-htmx-go/models"
+)
+
+templ Category(cat models.Category) {
+	<div
+		class="category"
+		x-data="{ editing : 'toto', setEdit(id) { this.editing = id;}}"
+	>
+		<span class="categoryTitle">{ cat.Title }</span>
+		<ul id="tasks">
+			for i := range cat.List {
+				@Task(cat.List[i])
+			}
+		</ul>
+		@CreateTask(cat.ID)
+	</div>
+}
