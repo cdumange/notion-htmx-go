@@ -1,4 +1,6 @@
-<div class=\"category\" x-data=\"{ editing : &#39;toto&#39;, setEdit(id) { this.editing = id;}}\"><span class=\"categoryTitle\">
-</span><ul id=\"tasks\">
+<div class=\"category\" x-data=\"{ editing : &#39;&#39;, setEdit(id) { this.editing = id;}}\"><span class=\"categoryTitle\">
+</span><ul droppable=\"true\" x-on:dragover.prevent=\"\" x-on:dragleave.prevent=\"\" x-on:drop.prevent=\"\n\t\t\t\tconst id = event.dataTransfer.getData(&#39;text/plain&#39;);\n\t\t\t\ttask_id.value = id\n\n\t\t\t\tconsole.log(event.target)\n\n\t\t\t\tconst target = event.target.closest(&#39;ul&#39;);\n\t\t\t\ttarget.querySelector(&#39;input#task_id&#39;).value = id\n\n\t\t\t\tconst element = document.getElementById(id);\n\t\t\t\ttarget.appendChild(element);\n\t\t\t\" hx-put=\"/tasks/cat\" hx-trigger=\"drop\" hx-vals=\"
+\" hx-swap=\"none\" id=\"tasks\"><input type=\"hidden\" id=\"category_id\" name=\"category_id\" value=\"
+\"> <input type=\"hidden\" id=\"task_id\" name=\"task_id\"> 
 </ul>
 </div>

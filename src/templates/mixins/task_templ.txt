@@ -1,8 +1,9 @@
-<li class=\"task\" draggable=\"true\" x-data=\"{edit:false}\" x-effect=\"
-\"><div :class=\"edit ? &#39;hidden&#39;: &#39;displayTask&#39;\" x-show=\"edit==false\"><p @click=\"
+<li id=\"
+\" class=\"task\" draggable=\"true\" x-data=\"{edit:false, drag:false}\" x-effect=\"
+\" x-on:dragstart.self=\"\n            drag=true;\n            event.dataTransfer.effectAllowed=&#39;move&#39;;\n            event.dataTransfer.setData(&#39;text/plain&#39;, event.target.id);\n        \"><div :class=\"edit ? &#39;hidden&#39;: &#39;displayTask&#39;\" x-show=\"edit==false\"><p @click=\"
 \">
 </p><p style=\"cursor: pointer\" hx-delete=\"
 \" hx-target=\"closest .task\" hx-swap=\"delete\">x</p></div><form hx-put=\"
-\" hx-target=\"closest .task\" x-show=\"edit\" hx-swap=\"outerHTML\"><input type=\"hidden\" name=\"category_id\" value=\"
+\" hx-target=\"closest .task\" x-show=\"edit\" hx-swap=\"outerHTML\" hx-trigger=\"submit\"><input type=\"hidden\" name=\"category_id\" value=\"
 \"> <input type=\"text\" name=\"title\" value=\"
 \"> <input type=\"submit\" value=\"valider\" x-on:click=\"edit=false;setEdit(&#39;&#39;);\"> <input type=\"button\" value=\"cancel\" x-on:click=\"setEdit(&#39;&#39;)\" x-show=\"edit\"></form></li>

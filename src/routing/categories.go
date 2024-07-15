@@ -18,6 +18,13 @@ type categoryService interface {
 	CreateCategory(ctx context.Context, category models.Category) (uuid.UUID, error)
 }
 
+type taskService interface {
+	UpdateTask(ctx context.Context, task models.Task) error
+	CreateTask(ctx context.Context, task models.Task) (uuid.UUID, error)
+	DeleteTask(ctx context.Context, ID uuid.UUID) error
+	ChangeCategory(ctx context.Context, taskID, categoryID uuid.UUID) error
+}
+
 func registerCategoryHandlers(app *echo.Echo, deps Dependencies) {
 	group := app.Group("/categories")
 	group.GET("/full/:categoryID", getCategoryWithTasks(deps.CategoryService))

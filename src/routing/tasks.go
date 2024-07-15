@@ -14,11 +14,12 @@ import (
 
 func registerTasksEndpoint(app *echo.Echo, deps Dependencies) {
 	group := app.Group("tasks")
-	group.PUT("/id/:id", updateTask(deps.TaskUpdater))
-	group.PUT("/category/:id", updateTask(deps.TaskUpdater))
+	group.PUT("/id/:id", updateTask(deps.TaskRepository))
+	group.PUT("/category/:id", updateTask(deps.TaskRepository))
+	group.PUT("/cat", updateTaskCat(deps.TaskRepository))
 
-	group.POST("", createTask(deps.TaskCreator))
-	group.DELETE("/:id", deleteTask(deps.TaskDeletor))
+	group.POST("", createTask(deps.TaskRepository))
+	group.DELETE("/:id", deleteTask(deps.TaskRepository))
 }
 
 type taskUpdater interface {
@@ -91,6 +92,35 @@ func deleteTask(deleter taskDeletor) echo.HandlerFunc {
 			c.Error(err)
 			return c.NoContent(http.StatusInternalServerError)
 		}
+		return c.NoContent(http.StatusAccepted)
+	}
+}
+
+type taskCategoriser interface {
+	ChangeCategory(ctx context.Context, taskID, categoryID uuid.UUID) error
+}
+
+type updateTaskInput struct {
+	CategoryID uuid.UUID `form:"category_id" validate:"required"`
+	TaskID     uuid.UUID `form:"task_id" validate:"required"`
+}
+
+func updateTaskCat(cat taskCategoriser) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var input updateTaskInput
+		if err := c.Bind(&input); err != nil {
+			return c.NoContent(http.StatusNoContent)
+		}
+
+		if err := c.Validate(input); err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		if err := cat.ChangeCategory(c.Request().Context(), input.TaskID, input.CategoryID); err != nil {
+			c.Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+
 		return c.NoContent(http.StatusAccepted)
 	}
 }

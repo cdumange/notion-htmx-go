@@ -3,35 +3,35 @@ package mixins
 import "github.com/google/uuid"
 
 templ CreateTask(categoryID uuid.UUID) {
-    <div x-data="{ oncreate: false }">
-        <form
-            hx-post="/tasks"
-            hx-swap="afterend"
-            hx-target="previous #tasks"
-            x-show="oncreate"
-            x-on:submit="oncreate=false"
-        >
-            <div>
-                <span>Title:</span>
-                <input
-                    type="hidden"
-                    name="category_id"
-                    value={ categoryID.String() }
-                />
-                <input
-                    type="text"
-                    name="title"
-                    placeholder="the title of your new task"
-                />
-            </div>
-            <input type="submit" value="create" />
-            <input type="button" value="cancel" x-on:click="oncreate=false"/>
-        </form>
-        <input
-            type="button"
-            x-on:click="oncreate=true"
-            x-show="oncreate == false"
-            value="+"
-        />
-    </div>
+	<div x-data="{ oncreate: false }">
+		<form
+			hx-post="/tasks"
+			hx-swap="afterend"
+			hx-target="previous #tasks"
+			x-show="oncreate"
+			x-on:submit="oncreate=false"
+		>
+			<div>
+				<span>Title:</span>
+				<input
+					type="hidden"
+					name="category_id"
+					value={ categoryID.String() }
+				/>
+				<input
+					type="text"
+					name="title"
+					placeholder="the title of your new task"
+				/>
+			</div>
+			<input type="submit" value="create"/>
+			<input type="button" value="cancel" x-on:click="oncreate=false"/>
+		</form>
+		<input
+			type="button"
+			x-on:click="oncreate=true"
+			x-show="oncreate == false"
+			value="+"
+		/>
+	</div>
 }
