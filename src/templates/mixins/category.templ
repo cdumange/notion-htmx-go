@@ -1,0 +1,47 @@
+package mixins
+
+import (
+	"fmt"
+	"github.com/cdumange/notion-htmx-go/models"
+)
+
+templ Category(cat models.Category) {
+	<div
+		class="category"
+		x-data="{ editing : '', setEdit(id) { this.editing = id;}}"
+	>
+		<span class="categoryTitle">{ cat.Title }</span>
+		<ul
+			droppable="true"
+			x-on:dragover.prevent=""
+			x-on:dragleave.prevent=""
+			x-on:drop.prevent="
+				const id = event.dataTransfer.getData('text/plain');
+				task_id.value = id
+
+				console.log(event.target)
+
+				const target = event.target.closest('ul');
+				target.querySelector('input#task_id').value = id
+
+				const element = document.getElementById(id);
+				target.appendChild(element);
+			"
+			hx-put="/tasks/cat"
+			hx-trigger="drop"
+			hx-vals={ fmt.Sprintf(`js:{
+				'category_id': "%s",
+				'task_id': task_id.value
+			}`, cat.ID) }
+			hx-swap="none"
+			id="tasks"
+		>
+			<input type="hidden" id="category_id" name="category_id" value={ cat.ID.String() }/>
+			<input type="hidden" id="task_id" name="task_id"/>
+			for i := range cat.List {
+				@Task(cat.List[i])
+			}
+		</ul>
+		@CreateTask(cat.ID)
+	</div>
+}

@@ -70,6 +70,12 @@ func (r *TaskRepository) CreateTask(ctx context.Context, task models.Task) (uuid
 	return ID, nil
 }
 
+// ChangeCategory changes the category of a task.
+func (r *TaskRepository) ChangeCategory(ctx context.Context, taskID, categoryID uuid.UUID) error {
+	_, err := r.db.ExecContext(ctx, `UPDATE tasks SET category_id = $1 WHERE id = $2`, categoryID, taskID)
+	return err
+}
+
 // UpdateTask updates a task.
 func (r *TaskRepository) UpdateTask(ctx context.Context, task models.Task) error {
 	_, err := r.db.ExecContext(ctx, "UPDATE tasks set title= $1 WHERE id=$2", task.Title, task.ID)

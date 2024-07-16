@@ -14,10 +14,3 @@ type Task struct {
 
 	CreationDate time.Time `json:"creation_date"`
 }
-
-// Category represent a task category.
-type Category struct {
-	ID    uuid.UUID `json:"id"`
-	Title string    `json:"title" form:"title"`
-	List  []Task    `json:"list"`
-}

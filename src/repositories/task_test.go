@@ -7,9 +7,50 @@ import (
 	"github.com/cdumange/notion-htmx-go/models"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	_ "github.com/lib/pq"
 )
+
+func (s *postgresSuite) TestChangeCategory() {
+	var err error
+	t := s.T()
+	ctx := context.Background()
+
+	cleanTable(t, s.db)
+	catR := NewCategoryRepository(s.db)
+	taskR := NewTaskRepository(s.db)
+
+	cat1 := models.Category{
+		Title: "todo",
+	}
+	cat1.ID, err = catR.CreateCategory(ctx, cat1)
+	require.NoError(t, err)
+
+	cat2 := models.Category{
+		Title: "done",
+	}
+	cat2.ID, err = catR.CreateCategory(ctx, cat2)
+	require.NoError(t, err)
+
+	task := models.Task{
+		CategoryID: cat1.ID,
+		Title:      "a task",
+	}
+	task.ID, err = taskR.CreateTask(ctx, task)
+	require.NoError(t, err)
+
+	require.NoError(t, taskR.ChangeCategory(ctx, task.ID, cat2.ID))
+
+	v, err := taskR.GetTaskByCategory(ctx, cat1.ID)
+	require.NoError(t, err)
+	require.Empty(t, v)
+
+	v, err = taskR.GetTaskByCategory(ctx, cat2.ID)
+	require.NoError(t, err)
+	require.Len(t, v, 1)
+	require.Equal(t, v[0].ID, task.ID)
+}
 
 func TestCreateTask(t *testing.T) {
 	ctx := context.Background()

@@ -4,19 +4,22 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/a-h/templ"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 
 	"github.com/cdumange/notion-htmx-go/models"
+	"github.com/cdumange/notion-htmx-go/templates/mixins"
 )
 
 func registerTasksEndpoint(app *echo.Echo, deps Dependencies) {
 	group := app.Group("tasks")
-	group.PUT("/id/:id", updateTask(deps.TaskUpdater))
-	group.PUT("/category/:id", updateTask(deps.TaskUpdater))
+	group.PUT("/id/:id", updateTask(deps.TaskRepository))
+	group.PUT("/category/:id", updateTask(deps.TaskRepository))
+	group.PUT("/cat", updateTaskCat(deps.TaskRepository))
 
-	group.POST("", createTask(deps.TaskCreator))
-	group.DELETE("/:id", deleteTask(deps.TaskDeletor))
+	group.POST("", createTask(deps.TaskRepository))
+	group.DELETE("/:id", deleteTask(deps.TaskRepository))
 }
 
 type taskUpdater interface {
@@ -42,7 +45,8 @@ func updateTask(s taskUpdater) echo.HandlerFunc {
 			return c.NoContent(http.StatusInternalServerError)
 		}
 
-		return c.Render(http.StatusAccepted, "task.html", task)
+		templ.Handler(mixins.Task(task)).ServeHTTP(c.Response().Writer, c.Request())
+		return nil
 	}
 }
 
@@ -68,7 +72,8 @@ func createTask(creator taskCreator) echo.HandlerFunc {
 		}
 
 		task.ID = ID
-		return c.Render(http.StatusCreated, "task.html", task)
+		templ.Handler(mixins.Task(task)).ServeHTTP(c.Response().Writer, c.Request())
+		return nil
 	}
 }
 
@@ -76,8 +81,46 @@ type taskDeletor interface {
 	DeleteTask(ctx context.Context, ID uuid.UUID) error
 }
 
-func deleteTask(_ taskDeletor) echo.HandlerFunc {
+func deleteTask(deleter taskDeletor) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		ID, err := uuid.Parse(c.Param("id"))
+		if err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+		err = deleter.DeleteTask(c.Request().Context(), ID)
+		if err != nil {
+			c.Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+		return c.NoContent(http.StatusAccepted)
+	}
+}
+
+type taskCategoriser interface {
+	ChangeCategory(ctx context.Context, taskID, categoryID uuid.UUID) error
+}
+
+type updateTaskInput struct {
+	CategoryID uuid.UUID `form:"category_id" validate:"required"`
+	TaskID     uuid.UUID `form:"task_id" validate:"required"`
+}
+
+func updateTaskCat(cat taskCategoriser) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var input updateTaskInput
+		if err := c.Bind(&input); err != nil {
+			return c.NoContent(http.StatusNoContent)
+		}
+
+		if err := c.Validate(input); err != nil {
+			return c.NoContent(http.StatusBadRequest)
+		}
+
+		if err := cat.ChangeCategory(c.Request().Context(), input.TaskID, input.CategoryID); err != nil {
+			c.Error(err)
+			return c.NoContent(http.StatusInternalServerError)
+		}
+
 		return c.NoContent(http.StatusAccepted)
 	}
 }

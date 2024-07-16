@@ -12,8 +12,9 @@ jobs:
           cache: false
       - uses: golangci/golangci-lint-action@v3
         with:
-          version: v1.54
           working-directory: ./src
+          args: --timeout 3m --verbose
+          version: v1.59
       - name: install templ
         run: go install github.com/a-h/templ/cmd/templ@latest
       - name: generate templates

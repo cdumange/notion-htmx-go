@@ -1,45 +1,50 @@
 package mixins
 
 import (
-    "fmt"
-    "github.com/cdumange/notion-htmx-go/models"
+	"fmt"
+	"github.com/cdumange/notion-htmx-go/models"
 )
 
 templ Task(task models.Task) {
-    <li
-        class="task"
-        draggable="true"
-        x-data="{edit:false}"
-        x-effect="edit= editing === '{{.ID}}'"
-        x-init="console.log(editing)"
-        ondrop="onDrop"
-        >
-        <div :class="edit ? 'hidden': 'displayTask'" x-show="edit==false">
-            <p @click="setEdit('{task.ID}')">{ task.Title }</p>
-            <p
-            style="cursor: pointer"
-            hx-delete={ fmt.Sprintf("/tasks/%s", task.ID)}
-            hx-target="closest .task"
-            hx-swap="delete"
-            >
-            x
-            </p>
-        </div>
-        <form
-            hx-put="/tasks/id/{ task.ID }"
-            hx-target="closest div"
-            x-show="edit"
-            hx-swap="outerHTML"
-        >
-            <input type="hidden" name="category_id" value="{ task.CategoryID }" />
-            <input type="text" name="title" value="{ task.Title }" />
-            <input type="submit" value="valider" x-on:click="edit=false" />
-            <input
-            type="button"
-            value="cancel"
-            x-on:click="setEdit('')"
-            x-show="edit"
-            />
-        </form>
-    </li>
+	<li
+		id={ task.ID.String() }
+		class="task"
+		draggable="true"
+		x-data="{edit:false, drag:false}"
+		x-effect={ fmt.Sprintf("edit= editing === '%s'", task.ID) }
+		x-on:dragstart.self="
+            drag=true;
+            event.dataTransfer.effectAllowed='move';
+            event.dataTransfer.setData('text/plain', event.target.id);
+        "
+	>
+		<div :class="edit ? 'hidden': 'displayTask'" x-show="edit==false">
+			<p @click={ fmt.Sprintf("setEdit('%s')", task.ID) }>{ task.Title }</p>
+			<p
+				style="cursor: pointer"
+				hx-delete={ fmt.Sprintf("/tasks/%s", task.ID) }
+				hx-target="closest .task"
+				hx-swap="delete"
+			>
+				x
+			</p>
+		</div>
+		<form
+			hx-put={ fmt.Sprintf("/tasks/id/%s", task.ID) }
+			hx-target="closest .task"
+			x-show="edit"
+			hx-swap="outerHTML"
+			hx-trigger="submit"
+		>
+			<input type="hidden" name="category_id" value={ task.CategoryID.String() }/>
+			<input type="text" name="title" value={ task.Title }/>
+			<input type="submit" value="valider" x-on:click="edit=false;setEdit('');"/>
+			<input
+				type="button"
+				value="cancel"
+				x-on:click="setEdit('')"
+				x-show="edit"
+			/>
+		</form>
+	</li>
 }
